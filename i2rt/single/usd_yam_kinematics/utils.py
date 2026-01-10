@@ -13,7 +13,7 @@ from typing import Sequence
 from jax.typing import ArrayLike
 from pathlib import Path
 
-YAM_URDF_DIR = Path.home() / "Desktop/moveit_isaac_ws/src/yam_arm_description/urdf/yam.urdf"
+YAM_URDF_DIR = Path.home() / "Desktop/moveit_isaac_ws/src/i2rt/single/yam_arm_description/urdf/yam.urdf"
 HOME_POSITION_CFG = onp.zeros(8)
 TCP_OFFSET = onp.array([0.0, 0.04, -0.13])
 
