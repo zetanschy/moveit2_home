@@ -1,5 +1,5 @@
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument
+from launch.actions import DeclareLaunchArgument, SetEnvironmentVariable
 from launch.substitutions import LaunchConfiguration, Command
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
@@ -14,6 +14,22 @@ def generate_launch_description():
     """
     # Get package share directory
     rtop_description_share = get_package_share_directory('rtop_description')
+    yam_arm_description_share = get_package_share_directory('yam_arm_description')
+    
+    # Set ROS_PACKAGE_PATH for Isaac Sim to resolve package:// URIs
+    # Isaac Sim needs ROS_PACKAGE_PATH to find ROS packages
+    workspace_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(rtop_description_share))))
+    src_dir = os.path.join(workspace_dir, 'src')
+    
+    # Build ROS_PACKAGE_PATH with source directories
+    ros_package_path = f"{os.path.join(src_dir, 'i2rt', 'bimanual')}:{os.path.join(src_dir, 'i2rt', 'single')}"
+    if 'ROS_PACKAGE_PATH' in os.environ:
+        ros_package_path = f"{os.environ['ROS_PACKAGE_PATH']}:{ros_package_path}"
+    
+    set_ros_package_path = SetEnvironmentVariable(
+        'ROS_PACKAGE_PATH',
+        ros_package_path
+    )
     
     # URDF file path
     urdf_file = os.path.join(rtop_description_share, 'urdf', 'rtop.urdf.xacro')
@@ -44,6 +60,7 @@ def generate_launch_description():
     )
     
     return LaunchDescription([
+        set_ros_package_path,  # Set ROS_PACKAGE_PATH before publishing URDF
         use_sim_time_arg,
         robot_state_publisher_node,
     ])

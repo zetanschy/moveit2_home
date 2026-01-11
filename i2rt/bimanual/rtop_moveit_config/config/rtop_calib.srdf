@@ -50,14 +50,6 @@
     <!--VIRTUAL JOINT: Purpose: this element defines a virtual joint between a robot link and an external frame of reference (considered fixed with respect to the robot)-->
     <!-- <virtual_joint name="virtual_joint" type="fixed" parent_frame="world" child_link="base"/> -->
     <!--DISABLE COLLISIONS: By default it is assumed that any link of the robot could potentially come into collision with any other link in the robot. This tag disables collision checking between a specified pair of links. -->
-    <!-- <disable_collisions link1="left_link_6" link2="left_camera_support" reason="never"/>
-    <disable_collisions link1="right_link_6" link2="right_camera_support" reason="never"/> -->
-    <!-- <disable_collisions link1="gripper" link2="jaw" reason="Adjacent"/>
-    <disable_collisions link1="gripper" link2="lower_arm" reason="Never"/>
-    <disable_collisions link1="gripper" link2="wrist" reason="Adjacent"/>
-    <disable_collisions link1="jaw" link2="lower_arm" reason="Never"/>
-    <disable_collisions link1="jaw" link2="wrist" reason="Never"/>
-    <disable_collisions link1="lower_arm" link2="upper_arm" reason="Adjacent"/>
-    <disable_collisions link1="lower_arm" link2="wrist" reason="Adjacent"/>
-    <disable_collisions link1="shoulder" link2="upper_arm" reason="Adjacent"/> -->
+    <disable_collisions link1="left_camera_support" link2="left_d435" reason="Adjacent"/>
+    <disable_collisions link1="right_camera_support" link2="right_d435" reason="Adjacent"/>
 </robot>

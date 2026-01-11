@@ -3,7 +3,7 @@
     <xacro:arg name="initial_positions_file" default="initial_positions.yaml" />
 
     <!-- Import rtop urdf file -->
-    <xacro:include filename="$(find rtop_description)/urdf/rtop_wo_cams.urdf" />
+    <xacro:include filename="$(find rtop_description)/urdf/rtop.urdf" />
 
     <!-- Import control_xacro -->
     <xacro:include filename="rtop_calib.ros2_control.xacro" />
