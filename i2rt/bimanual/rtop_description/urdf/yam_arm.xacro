@@ -42,7 +42,7 @@
         </geometry>
       </visual>
     </link>
-    <link name="${prefix}joint1">
+    <link name="${prefix}joint1_link">
       <inertial>
         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
         <mass value="0.001"/>
@@ -51,13 +51,13 @@
     </link>
     <joint type="revolute" name="${prefix}joint1">
       <parent link="${prefix}arm"/>
-      <child link="${prefix}joint1"/>
+      <child link="${prefix}joint1_link"/>
       <origin xyz="0.0 0.0 0.0631" rpy="0.0 0.0 1.5707963267948963"/>
       <axis xyz="0.0 0.0 1.0"/>
       <limit lower="-2.61799" upper="3.05433" effort="100" velocity="100"/>
     </joint>
     <joint type="fixed" name="${prefix}joint1_offset">
-      <parent link="${prefix}joint1"/>
+      <parent link="${prefix}joint1_link"/>
       <child link="${prefix}link_1"/>
       <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
     </joint>
@@ -88,7 +88,7 @@
         </geometry>
       </visual>
     </link>
-    <link name="${prefix}joint2">
+    <link name="${prefix}joint2_link">
       <inertial>
         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
         <mass value="0.001"/>
@@ -97,13 +97,13 @@
     </link>
     <joint type="revolute" name="${prefix}joint2">
       <parent link="${prefix}link_1"/>
-      <child link="${prefix}joint2"/>
+      <child link="${prefix}joint2_link"/>
       <origin xyz="2.5e-05 -0.02 0.0409" rpy="1.5707963267948966 0.0 1.5707963267948966"/>
       <axis xyz="0.0 0.0 1.0"/>
       <limit lower="0.0" upper="3.66519" effort="100" velocity="100"/>
     </joint>
     <joint type="fixed" name="${prefix}joint2_offset">
-      <parent link="${prefix}joint2"/>
+      <parent link="${prefix}joint2_link"/>
       <child link="${prefix}link_2"/>
       <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
     </joint>
@@ -140,7 +140,7 @@
         </geometry>
       </visual>
     </link>
-    <link name="${prefix}joint3">
+    <link name="${prefix}joint3_link">
       <inertial>
         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
         <mass value="0.001"/>
@@ -149,13 +149,13 @@
     </link>
     <joint type="revolute" name="${prefix}joint3">
       <parent link="${prefix}link_2"/>
-      <child link="${prefix}joint3"/>
+      <child link="${prefix}joint3_link"/>
       <origin xyz="0.264 0.0 0.0" rpy="3.141592653589793 0.0 0.0"/>
       <axis xyz="0.0 0.0 1.0"/>
       <limit lower="0.0" upper="3.66519" effort="100" velocity="100"/>
     </joint>
     <joint type="fixed" name="${prefix}joint3_offset">
-      <parent link="${prefix}joint3"/>
+      <parent link="${prefix}joint3_link"/>
       <child link="${prefix}link_3"/>
       <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
     </joint>
@@ -174,7 +174,7 @@
         </geometry>
       </visual>
     </link>
-    <link name="${prefix}joint4">
+    <link name="${prefix}joint4_link">
       <inertial>
         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
         <mass value="0.001"/>
@@ -183,13 +183,13 @@
     </link>
     <joint type="revolute" name="${prefix}joint4">
       <parent link="${prefix}link_3"/>
-      <child link="${prefix}joint4"/>
+      <child link="${prefix}joint4_link"/>
       <origin xyz="-0.245 -0.06 0.0" rpy="0.0 0.0 0.0"/>
       <axis xyz="0.0 0.0 1.0"/>
       <limit lower="-1.5708" upper="1.5708" effort="100" velocity="100"/>
     </joint>
     <joint type="fixed" name="${prefix}joint4_offset">
-      <parent link="${prefix}joint4"/>
+      <parent link="${prefix}joint4_link"/>
       <child link="${prefix}link_4"/>
       <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
     </joint>
@@ -208,7 +208,7 @@
         </geometry>
       </visual>
     </link>
-    <link name="${prefix}joint5">
+    <link name="${prefix}joint5_link">
       <inertial>
         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
         <mass value="0.001"/>
@@ -217,13 +217,13 @@
     </link>
     <joint type="revolute" name="${prefix}joint5">
       <parent link="${prefix}link_4"/>
-      <child link="${prefix}joint5"/>
+      <child link="${prefix}joint5_link"/>
       <origin xyz="-0.074 -0.0395 2.5e-05" rpy="-1.5707963267948966 1.5707963267948966 0.0"/>
       <axis xyz="0.0 0.0 1.0"/>
       <limit lower="-1.5708" upper="1.5708" effort="100" velocity="100"/>
     </joint>
     <joint type="fixed" name="${prefix}joint5_offset">
-      <parent link="${prefix}joint5"/>
+      <parent link="${prefix}joint5_link"/>
       <child link="${prefix}link_5"/>
       <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
     </joint>
@@ -248,7 +248,7 @@
         </geometry>
       </visual>
     </link>
-    <link name="${prefix}joint6">
+    <link name="${prefix}joint6_link">
       <inertial>
         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
         <mass value="0.001"/>
@@ -257,13 +257,13 @@
     </link>
     <joint type="revolute" name="${prefix}joint6">
       <parent link="${prefix}link_5"/>
-      <child link="${prefix}joint6"/>
+      <child link="${prefix}joint6_link"/>
       <origin xyz="0.0 0.0353 0.0395" rpy="-1.5707963267948963 0.0 0.0"/>
       <axis xyz="0.0 0.0 1.0"/>
       <limit lower="-2.0944" upper="2.0944" effort="100" velocity="100"/>
     </joint>
     <joint type="fixed" name="${prefix}joint6_offset">
-      <parent link="${prefix}joint6"/>
+      <parent link="${prefix}joint6_link"/>
       <child link="${prefix}link_6"/>
       <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
     </joint>
@@ -288,7 +288,7 @@
         </geometry>
       </visual>
     </link>
-    <link name="${prefix}left_finger">
+    <link name="${prefix}left_finger_link">
       <inertial>
         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
         <mass value="0.001"/>
@@ -297,13 +297,13 @@
     </link>
     <joint type="prismatic" name="${prefix}left_finger">
       <parent link="${prefix}link_6"/>
-      <child link="${prefix}left_finger"/>
+      <child link="${prefix}left_finger_link"/>
       <origin xyz="-0.037 0.0392 0.0605" rpy="-0.0 1.5707963267948966 0.0"/>
       <axis xyz="0.0 0.0 1.0"/>
       <limit lower="-0.00205" upper="0.037524" effort="100" velocity="100"/>
     </joint>
     <joint type="fixed" name="${prefix}left_finger_offset">
-      <parent link="${prefix}left_finger"/>
+      <parent link="${prefix}left_finger_link"/>
       <child link="${prefix}link_left_finger"/>
       <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
     </joint>
@@ -352,7 +352,7 @@
         </geometry>
       </visual>
     </link>
-    <link name="${prefix}right_finger">
+    <link name="${prefix}right_finger_link">
       <inertial>
         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
         <mass value="0.001"/>
@@ -361,13 +361,13 @@
     </link>
     <joint type="prismatic" name="${prefix}right_finger">
       <parent link="${prefix}link_6"/>
-      <child link="${prefix}right_finger"/>
+      <child link="${prefix}right_finger_link"/>
       <origin xyz="0.037 -0.0392 0.0605" rpy="-0.0 1.5707963267948966 0.0"/>
       <axis xyz="0.0 0.0 1.0"/>
       <limit lower="-0.037524" upper="0.00205" effort="100" velocity="100"/>
     </joint>
     <joint type="fixed" name="${prefix}right_finger_offset">
-      <parent link="${prefix}right_finger"/>
+      <parent link="${prefix}right_finger_link"/>
       <child link="${prefix}link_right_finger"/>
       <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
     </joint>
