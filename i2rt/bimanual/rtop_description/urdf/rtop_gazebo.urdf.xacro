@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="rtop">
+
+  <!-- Arguments -->
+  <xacro:arg name="use_gazebo" default="true"/>
+  <xacro:arg name="ros2_controllers_path" default="rtop_moveit_config/config/ros2_controllers.yaml"/>
+
+  <!-- Mechanical Arm (includes world link and world_to_base joint) -->
+  <xacro:include filename="$(find rtop_description)/urdf/rtop.urdf.xacro"/>
+
+  <!-- ROS2 Control for Gazebo -->
+  <xacro:if value="$(arg use_gazebo)">
+    <xacro:include filename="$(find rtop_description)/urdf/gazebo_sim_ros2_control.urdf.xacro"/>
+    <xacro:load_gazebo_sim_ros2_control_plugin robot_name="rtop" ros2_controllers_path="$(arg ros2_controllers_path)" use_gazebo="$(arg use_gazebo)"/>
+    <xacro:include filename="$(find rtop_description)/urdf/ros2_control.urdf.xacro" />
+    <xacro:ros2_control_interfaces/>
+  </xacro:if>
+</robot>
