@@ -14,13 +14,13 @@ install(
 	FILES_MATCHING PATTERN "*.stl"
 )
 
-# Install URDF files
+# Install URDF/Xacro files
 install(
 	DIRECTORY
 		urdf/
 	DESTINATION
 		share/${PROJECT_NAME}/urdf
-	FILES_MATCHING PATTERN "*.urdf"
+	FILES_MATCHING PATTERN "*.urdf" PATTERN "*.xacro"
 )
 
 # Install other directories

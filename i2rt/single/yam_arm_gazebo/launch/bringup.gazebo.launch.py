@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Gazebo Simulation Launch File for RTOP Robot
+Gazebo Simulation Launch File for yam_arm Robot
 """
 
 import os
@@ -25,21 +25,21 @@ from launch_ros.substitutions import FindPackageShare
 
 
 def generate_launch_description():
-    package_name = "rtop_description"
+    package_name = "yam_arm_description"
 
     # --- Paths / shares ---
     pkg_share = FindPackageShare(package=package_name)
     ros_gz_sim_dir = get_package_share_directory("ros_gz_sim")
 
-    rtop_description_share = get_package_share_directory("rtop_description")
+    yam_arm_description_share = get_package_share_directory("yam_arm_description")
     yam_arm_description_share = get_package_share_directory("yam_arm_description")
 
     # --- Gazebo resource paths for model:// resolution ---
-    rtop_description_share_parent = os.path.dirname(rtop_description_share)  # .../share
     yam_arm_description_share_parent = os.path.dirname(yam_arm_description_share)  # .../share
-    install_dir = os.path.dirname(rtop_description_share_parent)  # .../install
+    yam_arm_description_share_parent = os.path.dirname(yam_arm_description_share)  # .../share
+    install_dir = os.path.dirname(yam_arm_description_share_parent)  # .../install
 
-    gz_resource_path = f"{rtop_description_share_parent}:{yam_arm_description_share_parent}:{install_dir}"
+    gz_resource_path = f"{yam_arm_description_share_parent}:{yam_arm_description_share_parent}:{install_dir}"
     if "GZ_SIM_RESOURCE_PATH" in os.environ and os.environ["GZ_SIM_RESOURCE_PATH"]:
         gz_resource_path = f"{os.environ['GZ_SIM_RESOURCE_PATH']}:{gz_resource_path}"
 
@@ -60,15 +60,15 @@ def generate_launch_description():
     controllers_arg = DeclareLaunchArgument(
         "ros2_controllers_path",
         default_value=PathJoinSubstitution(
-            [FindPackageShare("rtop_moveit_config"), "config", "ros2_controllers.yaml"]
+            [FindPackageShare("yam_arm_moveit_config"), "config", "ros2_controllers.yaml"]
         ),
         description="Path to the ros2_controllers.yaml file",
     )
 
 
     # --- URDF / robot_description (xacro) ---
-    # urdf_file_path = PathJoinSubstitution([FindPackageShare(package="rtop_moveit_config"), "urdf", "rtop_calib.urdf.xacro"])
-    urdf_file_path = PathJoinSubstitution([pkg_share, "urdf", "rtop_gazebo.urdf.xacro"])
+    # urdf_file_path = PathJoinSubstitution([FindPackageShare(package="yam_arm_moveit_config"), "urdf", "yam_arm_calib.urdf.xacro"])
+    urdf_file_path = PathJoinSubstitution([pkg_share, "urdf", "yam.urdf"])
 
     # If your xacro accepts ros2_controllers_path:=..., pass it (safe even if unused in xacro)
     robot_description_command = Command(
@@ -107,13 +107,13 @@ def generate_launch_description():
     spawn_robot_node = Node(
         package="ros_gz_sim",
         executable="create",
-        name="spawn_rtop",
+        name="spawn_yam_arm",
         output="screen",
         arguments=[
             "-topic",
             "/robot_description",
             "-name",
-            "rtop",
+            "yam_arm",
             "-allow_renaming",
             "true",
             "-x",
@@ -129,7 +129,7 @@ def generate_launch_description():
 
     # --- Controllers ---
     # Controllers are automatically loaded by the gz_ros2_control plugin
-    # from the ros2_controllers.yaml file specified in rtop_gazebo.urdf.xacro
+    # from the ros2_controllers.yaml file specified in yam_arm_gazebo.urdf.xacro
     # No manual spawning needed!
 
     # --- Bridges (keep as-is if you still need them) ---

@@ -95,7 +95,7 @@
       <child link="joint2_link"/>
       <origin xyz="2.5e-05 -0.02 0.0409" rpy="1.5707963267948966 0.0 1.5707963267948966"/>
       <axis xyz="0.0 0.0 1.0"/>
-      <limit lower="-3.66519" upper="3.66519" effort="300" velocity="100"/>
+      <limit lower="-1.0e-03" upper="3.66519" effort="300" velocity="100"/>
    </joint>
    <joint type="fixed" name="joint2_offset">
       <parent link="joint2_link"/>
@@ -145,7 +145,7 @@
       <child link="joint3_link"/>
       <origin xyz="0.264 0.0 0.0" rpy="3.141592653589793 0.0 0.0"/>
       <axis xyz="0.0 0.0 1.0"/>
-      <limit lower="-3.66519" upper="3.66519" effort="300" velocity="100"/>
+      <limit lower="-1.0e-03" upper="3.66519" effort="300" velocity="100"/>
    </joint>
    <joint type="fixed" name="joint3_offset">
       <parent link="joint3_link"/>
