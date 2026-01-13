@@ -8,33 +8,27 @@ import time
 
 
 class ArmTester(Node):
-    def __init__(self, arm_side="left"):
-        """
-        Initialize the arm tester.
-
-        Args:
-            arm_side: "left" or "right" to select which arm to test
-        """
-        super().__init__(f"arm_tester_{arm_side}")
-        self.arm_side = arm_side
-        self.controller_name = f"{arm_side}_arm_controller"
+    def __init__(self):
+        """Initialize the arm tester."""
+        super().__init__("yam_arm_tester")
+        self.controller_name = "arm_controller"
         self.topic = f"/{self.controller_name}/joint_trajectory"
         
         self.publisher = self.create_publisher(
             JointTrajectory, self.topic, 10
         )
 
-        # Joint names for RTOP 6-DOF arm
+        # Joint names for YAM 6-DOF arm
         self.joint_names = [
-            f"{arm_side}_joint1",
-            f"{arm_side}_joint2",
-            f"{arm_side}_joint3",
-            f"{arm_side}_joint4",
-            f"{arm_side}_joint5",
-            f"{arm_side}_joint6",
+            "joint1",
+            "joint2",
+            "joint3",
+            "joint4",
+            "joint5",
+            "joint6",
         ]
 
-        self.get_logger().info(f"RTOP {arm_side.upper()} Arm Tester initialized")
+        self.get_logger().info("YAM Arm Tester initialized")
         # Wait for the publisher to be ready
         time.sleep(1)
 
@@ -56,7 +50,7 @@ class ArmTester(Node):
 
     def test_sequence(self):
         """Run a test sequence of movements."""
-        self.get_logger().info(f"Starting {self.arm_side} arm test sequence...")
+        self.get_logger().info("Starting YAM arm test sequence...")
 
         # Home position
         self.get_logger().info("Moving to home position...")
@@ -78,24 +72,13 @@ class ArmTester(Node):
         self.send_trajectory([0.0, 0.0, 0.0, 0.0, 0.0, 0.0], 3.0)
         time.sleep(4)
 
-        self.get_logger().info(f"{self.arm_side.upper()} arm test sequence complete!")
+        self.get_logger().info("YAM arm test sequence complete!")
 
 
 def main(args=None):
-    import sys
-    
     rclpy.init(args=args)
-    
-    # Parse command line argument for arm side
-    arm_side = "left"  # default
-    if len(sys.argv) > 1:
-        arm_side = sys.argv[1].lower()
-        if arm_side not in ["left", "right"]:
-            print("Usage: test_arm_movement.py [left|right]")
-            print(f"Invalid arm side: {arm_side}. Using default: left")
-            arm_side = "left"
 
-    tester = ArmTester(arm_side=arm_side)
+    tester = ArmTester()
 
     try:
         # Run the test sequence

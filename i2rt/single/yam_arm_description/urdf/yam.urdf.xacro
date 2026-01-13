@@ -378,4 +378,56 @@
       <child link="rf_down"/>
       <origin xyz="0.044 0.0 0.0" rpy="0.0 0.0 0.0"/>
    </joint>
+
+   <!-- Camera macro (optional) -->
+   <xacro:macro name="yam_camera">
+      <link name="camera_support">
+         <inertial>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <mass value="0.1"/>
+            <inertia ixx="0.0001" iyy="0.0001" izz="0.0001" ixy="0" ixz="0" iyz="0"/>
+         </inertial>
+         <visual name="camera_support_visual">
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+               <mesh filename="package://yam_arm_description/meshes/camera_support.stl"/>
+            </geometry>
+         </visual>
+         <collision name="camera_support_collision">
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+               <mesh filename="package://yam_arm_description/meshes/camera_support.stl"/>
+            </geometry>
+         </collision>
+      </link>
+      <joint type="fixed" name="link_6_to_camera_support_fixed">
+         <parent link="link_6"/>
+         <child link="camera_support"/>
+         <origin xyz="-0.02618 0.04089 0.05052" rpy="1.5708 1.5708 3.14159"/>
+      </joint>
+      <link name="d435">
+         <inertial>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <mass value="0.072"/>
+            <inertia ixx="0.0001" iyy="0.0001" izz="0.0001" ixy="0" ixz="0" iyz="0"/>
+         </inertial>
+         <visual name="d435_visual">
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+               <mesh filename="package://yam_arm_description/meshes/D435.obj"/>
+            </geometry>
+         </visual>
+         <collision name="d435_collision">
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+               <mesh filename="package://yam_arm_description/meshes/D435.obj"/>
+            </geometry>
+         </collision>
+      </link>
+      <joint type="fixed" name="camera_support2d435_fixed">
+         <parent link="camera_support"/>
+         <child link="d435"/>
+         <origin xyz="-0.03014 0.00604 0.06023" rpy="2.6180 0.0 -1.5708"/>
+      </joint>
+   </xacro:macro>
 </robot>

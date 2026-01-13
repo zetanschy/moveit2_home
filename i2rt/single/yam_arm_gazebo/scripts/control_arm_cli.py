@@ -11,18 +11,12 @@ import math
 
 
 class ArmControllerCLI(Node):
-    """A CLI tool to send joint trajectory goals to the RTOP bimanual robot."""
+    """A CLI tool to send joint trajectory goals to the YAM arm robot."""
 
-    def __init__(self, arm_side="left"):
-        """
-        Initialize the arm controller CLI.
-
-        Args:
-            arm_side: "left" or "right" to select which arm to control
-        """
-        super().__init__(f"arm_controller_cli_{arm_side}")
-        self.arm_side = arm_side
-        self.controller_name = f"{arm_side}_arm_controller"
+    def __init__(self):
+        """Initialize the arm controller CLI."""
+        super().__init__("yam_arm_controller_cli")
+        self.controller_name = "arm_controller"
         self.action_topic = f"/{self.controller_name}/follow_joint_trajectory"
         
         self.action_client = ActionClient(
@@ -32,12 +26,12 @@ class ArmControllerCLI(Node):
         )
 
         self.joint_names = [
-            f"{arm_side}_joint1",
-            f"{arm_side}_joint2",
-            f"{arm_side}_joint3",
-            f"{arm_side}_joint4",
-            f"{arm_side}_joint5",
-            f"{arm_side}_joint6",
+            "joint1",
+            "joint2",
+            "joint3",
+            "joint4",
+            "joint5",
+            "joint6",
         ]
 
         self.predefined_poses = {
@@ -60,7 +54,7 @@ class ArmControllerCLI(Node):
                 0.0,
             ],  # Example forward and slightly down
         }
-        self.get_logger().info(f"RTOP {arm_side.upper()} Arm Controller CLI started. Waiting for action server...")
+        self.get_logger().info("YAM Arm Controller CLI started. Waiting for action server...")
         if not self.action_client.wait_for_server(timeout_sec=10.0):
             self.get_logger().error(
                 f"Action server '{self.action_topic}' not available after 10 seconds. "
@@ -134,7 +128,7 @@ class ArmControllerCLI(Node):
     def run_cli(self):
         """Run the command-line interface loop."""
         while rclpy.ok():
-            print(f"\nRTOP {self.arm_side.upper()} ARM Control CLI")
+            print("\nYAM ARM Control CLI")
             print("=" * 40)
             print("Available predefined poses:")
             for i, name in enumerate(self.predefined_poses.keys()):
@@ -188,20 +182,9 @@ class ArmControllerCLI(Node):
 
 
 def main(args=None):
-    import sys
-    
     rclpy.init(args=args)
     
-    # Parse command line argument for arm side
-    arm_side = "left"  # default
-    if len(sys.argv) > 1:
-        arm_side = sys.argv[1].lower()
-        if arm_side not in ["left", "right"]:
-            print("Usage: control_arm_cli.py [left|right]")
-            print(f"Invalid arm side: {arm_side}. Using default: left")
-            arm_side = "left"
-    
-    arm_controller_cli_node = ArmControllerCLI(arm_side=arm_side)
+    arm_controller_cli_node = ArmControllerCLI()
 
     try:
         arm_controller_cli_node.run_cli()

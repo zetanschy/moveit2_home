@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="yam">
+  <xacro:include filename="$(find yam_arm_description)/urdf/yam.urdf.xacro"/>
+  <xacro:yam_camera/>
+</robot>
+
