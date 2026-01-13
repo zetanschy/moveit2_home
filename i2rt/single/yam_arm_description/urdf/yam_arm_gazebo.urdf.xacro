@@ -6,7 +6,7 @@
   <xacro:arg name="ros2_controllers_path" default="yam_arm_moveit_config/config/ros2_controllers.yaml"/>
 
   <!-- Include the base robot description as xacro -->
-  <xacro:include filename="$(find yam_arm_description)/urdf/yam.urdf.xacro"/>
+  <xacro:include filename="$(find yam_arm_description)/urdf/yam_cam.urdf.xacro"/>
 
   <!-- ROS2 Control for Gazebo -->
   <xacro:if value="$(arg use_gazebo)">
