@@ -2,7 +2,7 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
   <!-- Macro for a single YAM arm with camera
        Parameters:
-       - prefix: prefix for all link/joint names (e.g., "left_" or "right_")
+       - prefix: prefix for all link/joint names (e.g., "left_", "right_", or "" for no prefix)
        - parent_link: link to attach the arm to
        - xyz: position offset from parent_link
        - rpy: rotation offset from parent_link
@@ -100,7 +100,7 @@
       <child link="${prefix}joint2_link"/>
       <origin xyz="2.5e-05 -0.02 0.0409" rpy="1.5707963267948966 0.0 1.5707963267948966"/>
       <axis xyz="0.0 0.0 1.0"/>
-      <limit lower="0.0" upper="3.66519" effort="100" velocity="100"/>
+      <limit lower="-1.0e-03" upper="3.66519" effort="300" velocity="100"/>
     </joint>
     <joint type="fixed" name="${prefix}joint2_offset">
       <parent link="${prefix}joint2_link"/>
@@ -152,7 +152,7 @@
       <child link="${prefix}joint3_link"/>
       <origin xyz="0.264 0.0 0.0" rpy="3.141592653589793 0.0 0.0"/>
       <axis xyz="0.0 0.0 1.0"/>
-      <limit lower="0.0" upper="3.66519" effort="100" velocity="100"/>
+      <limit lower="-1.0e-03" upper="3.66519" effort="300" velocity="100"/>
     </joint>
     <joint type="fixed" name="${prefix}joint3_offset">
       <parent link="${prefix}joint3_link"/>
@@ -449,3 +449,4 @@
     </joint>
   </xacro:macro>
 </robot>
+

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="rtop">
-  <!-- Include the arm macro -->
-  <xacro:include filename="yam_arm.xacro"/>
+  <!-- Include the arm macro from yam_arm_description -->
+  <xacro:include filename="$(find yam_arm_description)/urdf/yam_arm_macro.xacro"/>
   
   <!-- Base link (body) -->
   <link name="base">
