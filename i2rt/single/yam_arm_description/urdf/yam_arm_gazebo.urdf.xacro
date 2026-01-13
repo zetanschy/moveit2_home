@@ -20,6 +20,18 @@
       </plugin>
     </gazebo>
 
+    <!-- Gazebo Material Colors for Links using RGBA values -->    
+    <!-- Camera -->    
+    <gazebo reference="camera_support">
+      <visual>
+        <material>
+          <ambient>0.1 0.1 0.1 1.0</ambient>
+          <diffuse>0.1 0.1 0.1 1.0</diffuse>
+          <specular>0.1 0.1 0.1 1.0</specular>
+        </material>
+      </visual>
+    </gazebo>  
+
     <!-- ROS2 Control Interfaces -->
     <ros2_control name="IgnitionSystem" type="system">
       <hardware>
@@ -76,4 +88,3 @@
     </ros2_control>
   </xacro:if>
 </robot>
-
