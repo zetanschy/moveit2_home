@@ -10,6 +10,8 @@ controller_manager:
     gripper_controller:
       type: position_controllers/GripperActionController
 
+    right_finger_controller:
+      type: position_controllers/JointGroupPositionController
 
     joint_state_broadcaster:
       type: joint_state_broadcaster/JointStateBroadcaster
@@ -31,3 +33,8 @@ arm_controller:
 gripper_controller:
   ros__parameters:
     joint: left_finger
+
+right_finger_controller:
+  ros__parameters:
+    joints:
+      - right_finger
