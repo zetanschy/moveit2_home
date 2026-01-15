@@ -810,19 +810,6 @@ ros2 action send_goal /gripper_controller/gripper_cmd \
   }
 }"
 
-# Controlar el gripper (controla left_finger, right_finger lo imita automáticamente en simulación)
-ros2 action send_goal /gripper_controller/gripper_cmd \
-  control_msgs/action/GripperCommand "
-{
-  command: {
-    position: 0.0,
-    max_effort: 50.0
-  }
-}"
-```
-<｜tool▁calls▁begin｜><｜tool▁call▁begin｜>
-read_file
-
 **Ejercicio 2.3.3: Usar Script de Prueba**
 
 ```bash

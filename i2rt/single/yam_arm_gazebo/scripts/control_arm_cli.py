@@ -36,7 +36,6 @@ class ArmControllerCLI(Node):
 
         self.predefined_poses = {
             "home": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-            "ready": [0.0, -0.785, 0.0, -1.57, 0.0, 0.785],  # Example "ready" pose
             "stretch_up": [
                 0.0,
                 math.pi / 2,
