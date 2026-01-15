@@ -413,6 +413,7 @@
     <origin rpy="-0.0 1.5707963267948966 0.0" xyz="0.037 -0.0392 0.0605"/>
     <axis xyz="0.0 0.0 1.0"/>
     <limit effort="100" lower="-0.037524" upper="0.00205" velocity="100"/>
+    <mimic joint="left_left_finger" multiplier="-1" offset="0"/>
   </joint>
   <joint name="left_right_finger_offset" type="fixed">
     <parent link="left_right_finger_link"/>
@@ -842,6 +843,7 @@
     <origin rpy="-0.0 1.5707963267948966 0.0" xyz="0.037 -0.0392 0.0605"/>
     <axis xyz="0.0 0.0 1.0"/>
     <limit effort="100" lower="-0.037524" upper="0.00205" velocity="100"/>
+    <mimic joint="right_left_finger" multiplier="-1" offset="0"/>
   </joint>
   <joint name="right_right_finger_offset" type="fixed">
     <parent link="right_right_finger_link"/>
