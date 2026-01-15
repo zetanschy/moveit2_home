@@ -797,78 +797,25 @@ ros2 action send_goal /arm_controller/follow_joint_trajectory \
   }
 }"
 
-# Controlar el gripper usando acción GripperCommand
+# Info action
 ros2 action info /gripper_controller/gripper_cmd
 
-# Abrir el gripper
+# Enviar comando el gripper
 ros2 action send_goal /gripper_controller/gripper_cmd \
   control_msgs/action/GripperCommand "
 {
   command: {
-    position: 0.04,
+    position: 0.5,
     max_effort: 50.0
   }
 }"
 
-# Cerrar el gripper
+# Controlar el gripper (controla left_finger, right_finger lo imita automáticamente en simulación)
 ros2 action send_goal /gripper_controller/gripper_cmd \
   control_msgs/action/GripperCommand "
 {
   command: {
     position: 0.0,
-    max_effort: 50.0
-  }
-}"
-
-# Ejemplo Bimanual (RTOP): Controlar ambos brazos y grippers
-# Terminal 1: Lanzar simulación bimanual
-ros2 launch rtop_gazebo rtop_ctrl.gazebo.launch.py
-
-# Terminal 2: Controlar brazo izquierdo
-ros2 action send_goal /left_arm_controller/follow_joint_trajectory \
-  control_msgs/action/FollowJointTrajectory "
-{
-  trajectory: {
-    joint_names: ['left_joint1', 'left_joint2', 'left_joint3', 'left_joint4', 'left_joint5', 'left_joint6'],
-    points: [
-      {
-        positions: [0.5, -0.5, 0.5, 0.0, 0.0, 0.0],
-        time_from_start: {sec: 3, nanosec: 0}
-      }
-    ]
-  }
-}"
-
-# Controlar brazo derecho
-ros2 action send_goal /right_arm_controller/follow_joint_trajectory \
-  control_msgs/action/FollowJointTrajectory "
-{
-  trajectory: {
-    joint_names: ['right_joint1', 'right_joint2', 'right_joint3', 'right_joint4', 'right_joint5', 'right_joint6'],
-    points: [
-      {
-        positions: [-0.5, 0.5, -0.5, 0.0, 0.0, 0.0],
-        time_from_start: {sec: 3, nanosec: 0}
-      }
-    ]
-  }
-}"
-
-# Controlar ambos grippers simultáneamente
-ros2 action send_goal /left_gripper_controller/gripper_cmd \
-  control_msgs/action/GripperCommand "
-{
-  command: {
-    position: 0.04,
-    max_effort: 50.0
-  }
-}" &
-
-ros2 action send_goal /right_gripper_controller/gripper_cmd \
-  control_msgs/action/GripperCommand "
-{
-  command: {
-    position: 0.04,
     max_effort: 50.0
   }
 }"
@@ -995,161 +942,3 @@ if __name__ == '__main__':
 2. Usar MoveIt para planificar una trayectoria
 3. Verificar que se ejecuta correctamente
 4. Comparar con control directo del ejercicio 1
-
----
-
-## 📚 Recursos y Referencias
-
-### Documentación Oficial
-
-- **ROS 2:** https://docs.ros.org/en/humble/
-- **MoveIt 2:** https://moveit.picknik.ai/
-- **ros2_control (Humble):** https://control.ros.org/humble/doc/ros2_control/doc/index.html
-  - [Controller Manager Concepts](https://control.ros.org/humble/doc/ros2_control/doc/concepts/controller_manager.html)
-  - [Hardware Interface Types](https://control.ros.org/humble/doc/ros2_control/doc/concepts/hardware_interface_types.html)
-  - [Hardware Components](https://control.ros.org/humble/doc/ros2_control/doc/concepts/hardware_components.html)
-  - [Controller Chaining](https://control.ros.org/humble/doc/ros2_control/doc/concepts/controller_chaining.html)
-- **ros2_controllers:** https://control.ros.org/humble/doc/ros2_controllers/doc/index.html
-- **URDF:** http://wiki.ros.org/urdf
-- **Xacro:** http://wiki.ros.org/xacro
-- **TF2:** https://docs.ros.org/en/humble/Tutorials/Intermediate/Tf2/Tf2-Main.html
-
-### Archivos Clave del Proyecto
-
-**Single Arm (YAM):**
-- URDF Macro: `i2rt/single/yam_arm_description/urdf/yam_arm_macro.xacro`
-- Configuración Gazebo: `i2rt/single/yam_arm_description/urdf/yam_arm_gazebo.urdf.xacro`
-- Controladores: `i2rt/single/yam_arm_moveit_config/config/ros2_controllers.yaml`
-- Launch Gazebo: `i2rt/single/yam_arm_gazebo/launch/yam_ctrl.gazebo.launch.py`
-- Scripts Control: `i2rt/single/yam_arm_gazebo/scripts/`
-
-**Bimanual (RTOP):**
-- URDF: `i2rt/bimanual/rtop_description/urdf/rtop.urdf.xacro`
-- Launch: `i2rt/bimanual/rtop_gazebo/launch/rtop_ctrl.gazebo.launch.py`
-
-### Comandos Útiles de Referencia
-
-```bash
-# URDF/Xacro
-ros2 run xacro xacro <archivo.xacro> > <salida.urdf>
-ros2 run urdf_parser check_urdf <archivo.urdf>
-
-# TF2
-ros2 run tf2_tools view_frames
-ros2 run tf2_ros tf2_echo <frame1> <frame2>
-ros2 run tf2_ros tf2_monitor
-
-# Controladores (ros2_control CLI)
-ros2 control list_controllers          # Listar controladores y su estado
-ros2 control list_controllers -v       # Listar con información detallada
-ros2 control list_hardware_interfaces  # Listar interfaces de hardware disponibles
-ros2 control set_controller_state <controller> start   # Activar controlador
-ros2 control set_controller_state <controller> stop     # Desactivar controlador
-ros2 control load_controller <controller>              # Cargar controlador
-ros2 control unload_controller <controller>            # Descargar controlador
-
-# Topics y Actions
-ros2 topic list
-ros2 topic echo <topic>
-ros2 action list
-ros2 action info <action>
-ros2 action send_goal <action> <tipo> "<mensaje>"
-
-# MoveIt
-ros2 launch <package> moveit_rviz.launch.py
-ros2 launch <package> demo.launch.py
-```
-
-### Troubleshooting Común
-
-**Problema:** Controladores no se cargan
-```bash
-# Verificar que robot_description está disponible
-ros2 topic echo /robot_description --once
-
-# Verificar configuración de controladores
-ros2 param get /controller_manager ros__parameters
-```
-
-**Problema:** TF2 no se publica
-```bash
-# Verificar robot_state_publisher
-ros2 node list | grep robot_state_publisher
-ros2 topic echo /joint_states --once
-```
-
-**Problema:** Movimiento no suave
-```bash
-# Verificar frecuencia de actualización
-ros2 topic hz /arm_controller/joint_trajectory
-# Aumentar update_rate en ros2_controllers.yaml
-```
-
----
-
-## 🎯 Evaluación del Curso
-
-### Criterios de Evaluación
-
-1. **Comprensión Teórica (40%):**
-   - Explicar estructura URDF/Xacro
-   - Entender sistema TF2
-   - Diferenciar tipos de control
-
-2. **Habilidades Prácticas (40%):**
-   - Lanzar simulación correctamente
-   - Enviar comandos al robot
-   - Usar MoveIt para planificación
-
-3. **Proyecto Final (20%):**
-   - Implementar teleoperación funcional
-   - Crear secuencia de movimientos
-   - Integrar con MoveIt
-
-### Proyecto Final Sugerido
-
-**Tarea:** Crear un sistema de teleoperación completo que:
-1. Permita control manual de articulaciones
-2. Incluya poses predefinidas
-3. Integre con MoveIt para planificación
-4. Muestre feedback visual en RViz
-
----
-
-## 📝 Notas del Instructor
-
-### Puntos Clave a Enfatizar
-
-1. **Modularidad:** Xacro permite reutilización (single → bimanual)
-2. **TF2:** Base para todo sistema de coordenadas en ROS 2
-3. **ros2_control:** Separación hardware/software facilita portabilidad
-4. **MoveIt:** Simplifica planificación compleja
-
-### Tiempos Sugeridos por Sección
-
-- **1.2 URDF/Xacro:** 25 min (10 teórico + 15 práctico)
-- **1.3 TF2:** 15 min (7 teórico + 8 práctico)
-- **2.1 Tipos de Control:** 25 min (10 teórico + 15 práctico)
-- **2.2 Teleoperación:** 25 min (10 teórico + 15 práctico)
-- **2.3 Controladores:** 25 min (10 teórico + 15 práctico)
-- **Ejercicios Finales:** 30 min
-
-### Adaptaciones Posibles
-
-- **Más Teoría:** Reducir ejercicios prácticos
-- **Más Práctica:** Simplificar teoría, más tiempo en ejercicios
-- **Nivel Avanzado:** Agregar temas de cinemática inversa, planificación avanzada
-
----
-
-## 📧 Contacto y Soporte
-
-Para preguntas o problemas durante el curso:
-- Revisar documentación oficial de ROS 2
-- Consultar logs: `~/.ros/log/`
-- Verificar configuración de paquetes
-
----
-
-**¡Éxito en el curso! 🚀**
-

@@ -22,6 +22,6 @@ moveit_simple_controller_manager:
     type: GripperCommand
     joints:
       - left_finger
-      - right_finger
+      # right_finger removed - it mimics left_finger via URDF mimic joint
     action_ns: gripper_cmd
     default: true

@@ -1,2 +1,4 @@
 bcr_arm/
 .vscode/
+*.pdf
+*.gv

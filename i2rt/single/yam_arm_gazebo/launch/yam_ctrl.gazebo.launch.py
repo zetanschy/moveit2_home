@@ -181,16 +181,7 @@ def generate_launch_description():
         output="screen",
     )
 
-    spawn_right_finger_controller = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=[
-            "right_finger_controller",
-            "--controller-manager",
-            "/controller_manager",
-        ],
-        output="screen",
-    )
+    # right_finger_controller removed - right_finger now mimics left_finger via URDF mimic joint
 
     # Delay controller spawning until after controller_manager is ready
     load_controllers = TimerAction(
@@ -199,7 +190,7 @@ def generate_launch_description():
             spawn_joint_state_broadcaster,
             spawn_arm_controller,
             spawn_gripper_controller,
-            spawn_right_finger_controller,
+            # spawn_right_finger_controller removed - right_finger mimics left_finger
         ],
     )
 
