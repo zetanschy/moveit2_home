@@ -3,3 +3,7 @@ bcr_arm/
 *.pdf
 *.gv
 *.png
+
+# Ignorar todos los archivos .md excepto README.md
+*.md
+!README.md
