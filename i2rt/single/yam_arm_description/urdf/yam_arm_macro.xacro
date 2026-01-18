@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
-  <!-- Macro for a single YAM arm with camera
+  <!-- Macro for a single YAM arm with camera (with collision meshes)
        Parameters:
        - prefix: prefix for all link/joint names (e.g., "left_", "right_", or "" for no prefix)
        - parent_link: link to attach the arm to
@@ -21,6 +21,12 @@
           <mesh filename="package://yam_arm_description/meshes/converted_model2_808080ff.obj"/>
         </geometry>
       </visual>
+      <collision name="${prefix}model2_collision">
+        <origin xyz="-2.0738360577213484e-05 2.041311002275178e-05 0.01154286287615687" rpy="1.5701130102263443 0.005344186766801151 -3.1414365496107033"/>
+        <geometry>
+          <mesh filename="package://yam_arm_description/meshes/converted_model2_808080ff.obj"/>
+        </geometry>
+      </collision>
     </link>
     <joint type="fixed" name="${prefix}parent2arm_fixed">
       <parent link="${parent_link}"/>
@@ -41,6 +47,12 @@
           <mesh filename="package://yam_arm_description/meshes/converted_model2__2_808080ff.obj"/>
         </geometry>
       </visual>
+      <collision name="${prefix}model2__2_collision">
+        <origin xyz="0.0007117901440024366 -0.008267794027987337 0.022250179687008112" rpy="1.5650454550240567 -0.6317582807873867 1.5710673633815686"/>
+        <geometry>
+          <mesh filename="package://yam_arm_description/meshes/converted_model2__2_808080ff.obj"/>
+        </geometry>
+      </collision>
     </link>
     <link name="${prefix}joint1_link">
       <inertial>
@@ -75,18 +87,36 @@
           <mesh filename="package://yam_arm_description/meshes/converted_model2__3_808080ff.obj"/>
         </geometry>
       </visual>
+      <collision name="${prefix}model2__3_collision">
+        <origin xyz="0.26007948449650414 2.5977632368834325e-07 0.00022869283697025413" rpy="0.0012886015838013758 0.0 1.5707963267948966"/>
+        <geometry>
+          <mesh filename="package://yam_arm_description/meshes/converted_model2__3_808080ff.obj"/>
+        </geometry>
+      </collision>
       <visual name="${prefix}model2__4">
         <origin xyz="0.003920561027152974 2.5977629421192194e-07 0.00022869282878015162" rpy="-0.0012886020855807743 0.0 1.5707963267948966"/>
         <geometry>
           <mesh filename="package://yam_arm_description/meshes/converted_model2__4_808080ff.obj"/>
         </geometry>
       </visual>
+      <collision name="${prefix}model2__4_collision">
+        <origin xyz="0.003920561027152974 2.5977629421192194e-07 0.00022869282878015162" rpy="-0.0012886020855807743 0.0 1.5707963267948966"/>
+        <geometry>
+          <mesh filename="package://yam_arm_description/meshes/converted_model2__4_808080ff.obj"/>
+        </geometry>
+      </collision>
       <visual name="${prefix}model2__5">
         <origin xyz="0.1320117461361114 -1.306943646950387e-05 9.079293692478702e-08" rpy="1.5720341600620127 -1.5679213575591051 -1.5720413321413815"/>
         <geometry>
           <mesh filename="package://yam_arm_description/meshes/converted_model2__5_808080ff.obj"/>
         </geometry>
       </visual>
+      <collision name="${prefix}model2__5_collision">
+        <origin xyz="0.1320117461361114 -1.306943646950387e-05 9.079293692478702e-08" rpy="1.5720341600620127 -1.5679213575591051 -1.5720413321413815"/>
+        <geometry>
+          <mesh filename="package://yam_arm_description/meshes/converted_model2__5_808080ff.obj"/>
+        </geometry>
+      </collision>
     </link>
     <link name="${prefix}joint2_link">
       <inertial>
@@ -121,24 +151,48 @@
           <mesh filename="package://yam_arm_description/meshes/converted_model2__6_808080ff.obj"/>
         </geometry>
       </visual>
+      <collision name="${prefix}model2__6_collision">
+        <origin xyz="-0.24063976713274154 -0.059999782142154706 -0.003760273578300405" rpy="3.0364915071378875 0.0 -1.5707963267948968"/>
+        <geometry>
+          <mesh filename="package://yam_arm_description/meshes/converted_model2__6_808080ff.obj"/>
+        </geometry>
+      </collision>
       <visual name="${prefix}model2__7">
         <origin xyz="-0.007710009148021196 -0.03486048010433765 0.0347071645682882" rpy="-2.87879006743723 1.4720957652931421 1.6013719605643306"/>
         <geometry>
           <mesh filename="package://yam_arm_description/meshes/converted_model2__7_808080ff.obj"/>
         </geometry>
       </visual>
+      <collision name="${prefix}model2__7_collision">
+        <origin xyz="-0.007710009148021196 -0.03486048010433765 0.0347071645682882" rpy="-2.87879006743723 1.4720957652931421 1.6013719605643306"/>
+        <geometry>
+          <mesh filename="package://yam_arm_description/meshes/converted_model2__7_808080ff.obj"/>
+        </geometry>
+      </collision>
       <visual name="${prefix}model2__8">
         <origin xyz="-0.1206720859561709 -0.06001334031535149 5.408345552423209e-07" rpy="1.5707945314613085 0.0026832997041226214 -1.570809065297576"/>
         <geometry>
           <mesh filename="package://yam_arm_description/meshes/converted_model2__8_808080ff.obj"/>
         </geometry>
       </visual>
+      <collision name="${prefix}model2__8_collision">
+        <origin xyz="-0.1206720859561709 -0.06001334031535149 5.408345552423209e-07" rpy="1.5707945314613085 0.0026832997041226214 -1.570809065297576"/>
+        <geometry>
+          <mesh filename="package://yam_arm_description/meshes/converted_model2__8_808080ff.obj"/>
+        </geometry>
+      </collision>
       <visual name="${prefix}model2__9">
         <origin xyz="-0.008240431625057998 -0.03737256683266851 -0.033699619180835645" rpy="0.28836143122615043 1.443690062944695 -1.515041718980295"/>
         <geometry>
           <mesh filename="package://yam_arm_description/meshes/converted_model2__9_808080ff.obj"/>
         </geometry>
       </visual>
+      <collision name="${prefix}model2__9_collision">
+        <origin xyz="-0.008240431625057998 -0.03737256683266851 -0.033699619180835645" rpy="0.28836143122615043 1.443690062944695 -1.515041718980295"/>
+        <geometry>
+          <mesh filename="package://yam_arm_description/meshes/converted_model2__9_808080ff.obj"/>
+        </geometry>
+      </collision>
     </link>
     <link name="${prefix}joint3_link">
       <inertial>
@@ -173,6 +227,12 @@
           <mesh filename="package://yam_arm_description/meshes/converted_model2__10_808080ff.obj"/>
         </geometry>
       </visual>
+      <collision name="${prefix}model2__10_collision">
+        <origin xyz="-0.046776068687813616 -0.038270471745625256 -0.0008915243508352188" rpy="1.5394854457020648 0.021662003917252814 -0.7117475435376935"/>
+        <geometry>
+          <mesh filename="package://yam_arm_description/meshes/converted_model2__10_808080ff.obj"/>
+        </geometry>
+      </collision>
     </link>
     <link name="${prefix}joint4_link">
       <inertial>
@@ -207,6 +267,12 @@
           <mesh filename="package://yam_arm_description/meshes/converted_model2__11_808080ff.obj"/>
         </geometry>
       </visual>
+      <collision name="${prefix}model2__11_collision">
+        <origin xyz="5.815639855540116e-05 -0.0005553836621680353 0.03206235288381598" rpy="2.67318045036048 0.0016544870659682687 -0.01152938218496731"/>
+        <geometry>
+          <mesh filename="package://yam_arm_description/meshes/converted_model2__11_808080ff.obj"/>
+        </geometry>
+      </collision>
     </link>
     <link name="${prefix}joint5_link">
       <inertial>
@@ -241,12 +307,24 @@
           <mesh filename="package://yam_arm_description/meshes/converted_model2__12_808080ff.obj"/>
         </geometry>
       </visual>
+      <collision name="${prefix}model2__12_collision">
+        <origin xyz="8.788302043375991e-05 0.0001190912220788709 0.05116721790419726" rpy="-1.7453668887584697 1.565490971850807 -1.9699125405676954"/>
+        <geometry>
+          <mesh filename="package://yam_arm_description/meshes/converted_model2__12_808080ff.obj"/>
+        </geometry>
+      </collision>
       <visual name="${prefix}model2__13">
         <origin xyz="-0.00017825474995774047 1.6195054943213272e-05 0.03422382038141725" rpy="-1.5799559470247646 0.8170286688385331 -0.14641337505452354"/>
         <geometry>
           <mesh filename="package://yam_arm_description/meshes/converted_model2__13_808080ff.obj"/>
         </geometry>
       </visual>
+      <collision name="${prefix}model2__13_collision">
+        <origin xyz="-0.00017825474995774047 1.6195054943213272e-05 0.03422382038141725" rpy="-1.5799559470247646 0.8170286688385331 -0.14641337505452354"/>
+        <geometry>
+          <mesh filename="package://yam_arm_description/meshes/converted_model2__13_808080ff.obj"/>
+        </geometry>
+      </collision>
     </link>
     <link name="${prefix}joint6_link">
       <inertial>
@@ -281,12 +359,24 @@
           <mesh filename="package://yam_arm_description/meshes/converted_model2__14_808080ff.obj"/>
         </geometry>
       </visual>
+      <collision name="${prefix}model2__14_collision">
+        <origin xyz="-0.02621919095860112 -0.050961301789609365 0.04847966761952425" rpy="1.2436149090470108 -1.3351755324428634 3.1192068678405445"/>
+        <geometry>
+          <mesh filename="package://yam_arm_description/meshes/converted_model2__14_808080ff.obj"/>
+        </geometry>
+      </collision>
       <visual name="${prefix}model2__15">
         <origin xyz="-0.0018267628293356375 -0.014013453565219658 0.02860778296204746" rpy="-0.08499655397451025 -0.08210615684708134 0.012014286826329146"/>
         <geometry>
           <mesh filename="package://yam_arm_description/meshes/converted_model2__15_808080ff.obj"/>
         </geometry>
       </visual>
+      <collision name="${prefix}model2__15_collision">
+        <origin xyz="-0.0018267628293356375 -0.014013453565219658 0.02860778296204746" rpy="-0.08499655397451025 -0.08210615684708134 0.012014286826329146"/>
+        <geometry>
+          <mesh filename="package://yam_arm_description/meshes/converted_model2__15_808080ff.obj"/>
+        </geometry>
+      </collision>
     </link>
     <link name="${prefix}left_finger_link">
       <inertial>
@@ -345,12 +435,24 @@
           <mesh filename="package://yam_arm_description/meshes/converted_model2__16_808080ff.obj"/>
         </geometry>
       </visual>
+      <collision name="${prefix}model2__16_collision">
+        <origin xyz="-0.001826763203738313 0.014013021507929144 -0.02860778467768097" rpy="-0.08499624911644794 0.08210615585822456 -0.012014239544932078"/>
+        <geometry>
+          <mesh filename="package://yam_arm_description/meshes/converted_model2__16_808080ff.obj"/>
+        </geometry>
+      </collision>
       <visual name="${prefix}model2__17">
         <origin xyz="-0.026152342123741346 0.026813733867866105 -0.04844908896546901" rpy="-1.8906094630983066 -1.338715519977303 -0.013733131456833558"/>
         <geometry>
           <mesh filename="package://yam_arm_description/meshes/converted_model2__17_808080ff.obj"/>
         </geometry>
       </visual>
+      <collision name="${prefix}model2__17_collision">
+        <origin xyz="-0.026152342123741346 0.026813733867866105 -0.04844908896546901" rpy="-1.8906094630983066 -1.338715519977303 -0.013733131456833558"/>
+        <geometry>
+          <mesh filename="package://yam_arm_description/meshes/converted_model2__17_808080ff.obj"/>
+        </geometry>
+      </collision>
     </link>
     <link name="${prefix}right_finger_link">
       <inertial>
@@ -396,58 +498,5 @@
       <child link="${prefix}rf_down"/>
       <origin xyz="0.044 0.0 0.0" rpy="0.0 0.0 0.0"/>
     </joint>
-    
-    <!-- Camera Support -->
-    <link name="${prefix}camera_support">
-      <inertial>
-        <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
-        <mass value="0.1"/>
-        <inertia ixx="0.0001" iyy="0.0001" izz="0.0001" ixy="0" ixz="0" iyz="0"/>
-      </inertial>
-      <visual name="${prefix}camera_support_visual">
-        <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
-        <geometry>
-          <mesh filename="package://yam_arm_description/meshes/camera_support.stl"/>
-        </geometry>
-      </visual>
-      <collision name="${prefix}camera_support_collision">
-        <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
-        <geometry>
-          <mesh filename="package://yam_arm_description/meshes/camera_support.stl"/>
-        </geometry>
-      </collision>
-    </link>
-    <joint type="fixed" name="${prefix}link_6_to_camera_support_fixed">
-      <parent link="${prefix}link_6"/>
-      <child link="${prefix}camera_support"/>
-      <origin xyz="-0.02618 0.04089 0.05052" rpy="1.5708 1.5708 3.14159"/>
-    </joint>
-    
-    <!-- D435 Camera -->
-    <link name="${prefix}d435">
-      <inertial>
-        <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
-        <mass value="0.072"/>
-        <inertia ixx="0.0001" iyy="0.0001" izz="0.0001" ixy="0" ixz="0" iyz="0"/>
-      </inertial>
-      <visual name="${prefix}d435_visual">
-        <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
-        <geometry>
-          <mesh filename="package://yam_arm_description/meshes/D435.obj"/>
-        </geometry>
-      </visual>
-      <collision name="${prefix}d435_collision">
-        <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
-        <geometry>
-          <mesh filename="package://yam_arm_description/meshes/D435.obj"/>
-        </geometry>
-      </collision>
-    </link>
-    <joint type="fixed" name="${prefix}camera_support2d435_fixed">
-      <parent link="${prefix}camera_support"/>
-      <child link="${prefix}d435"/>
-      <origin xyz="-0.03014 0.00604 0.06023" rpy="2.6180 0.0 -1.5708"/>
-    </joint>
   </xacro:macro>
 </robot>
-

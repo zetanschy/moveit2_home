@@ -48,7 +48,7 @@
   <joint name="base_to_top_camera" type="fixed">
     <parent link="base"/>
     <child link="top_camera"/>
-    <origin rpy="2.35619 0.0 1.5708" xyz="0.0865 0.0 1.77"/>
+    <origin rpy="2.84489 0.0 1.5708" xyz="0.0865 0.0 1.77"/>
   </joint>
   <!-- World link -->
   <link name="world">
