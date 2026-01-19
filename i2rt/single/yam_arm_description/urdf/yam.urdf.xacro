@@ -12,7 +12,7 @@
       </inertial>
    </link>
    
-   <!-- Use the yam_arm macro with empty prefix and parent_link="world" -->
-   <xacro:yam_arm prefix="" parent_link="world" xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   <!-- Use the yam_arm macro with empty prefix, parent_link="world", and camera disabled -->
+   <xacro:yam_arm prefix="" parent_link="world" xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" use_camera="false"/>
    
 </robot>

@@ -26,6 +26,7 @@ install(
 # Install other directories
 install(
 	DIRECTORY
+		gazebo_meshes
 		meshes
 		config
 		launch

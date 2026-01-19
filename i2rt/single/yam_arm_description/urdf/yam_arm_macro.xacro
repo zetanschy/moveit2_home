@@ -1,13 +1,14 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
-  <!-- Macro for a single YAM arm with camera (with collision meshes)
+  <!-- Macro for a single YAM arm with optional camera (with collision meshes)
        Parameters:
        - prefix: prefix for all link/joint names (e.g., "left_", "right_", or "" for no prefix)
        - parent_link: link to attach the arm to
        - xyz: position offset from parent_link
        - rpy: rotation offset from parent_link
+       - use_camera: whether to include camera components (default: false)
   -->
-  <xacro:macro name="yam_arm" params="prefix parent_link xyz rpy">
+  <xacro:macro name="yam_arm" params="prefix parent_link xyz rpy use_camera:=false">
     <!-- Arm base link -->
     <link name="${prefix}arm">
       <inertial>
@@ -498,5 +499,58 @@
       <child link="${prefix}rf_down"/>
       <origin xyz="0.044 0.0 0.0" rpy="0.0 0.0 0.0"/>
     </joint>
+    
+    <!-- Camera Support and D435 Camera (optional) -->
+    <xacro:if value="${use_camera}">
+      <link name="${prefix}camera_support">
+        <inertial>
+          <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+          <mass value="0.1"/>
+          <inertia ixx="0.0001" iyy="0.0001" izz="0.0001" ixy="0" ixz="0" iyz="0"/>
+        </inertial>
+        <visual name="${prefix}camera_support_visual">
+          <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+          <geometry>
+            <mesh filename="package://yam_arm_description/meshes/camera_support.stl"/>
+          </geometry>
+        </visual>
+        <collision name="${prefix}camera_support_collision">
+          <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+          <geometry>
+            <mesh filename="package://yam_arm_description/meshes/camera_support.stl"/>
+          </geometry>
+        </collision>
+      </link>
+      <joint type="fixed" name="${prefix}link_6_to_camera_support_fixed">
+        <parent link="${prefix}link_6"/>
+        <child link="${prefix}camera_support"/>
+        <origin xyz="-0.02618 0.04089 0.05052" rpy="1.5708 1.5708 3.14159"/>
+      </joint>
+      
+      <link name="${prefix}d435">
+        <inertial>
+          <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+          <mass value="0.072"/>
+          <inertia ixx="0.0001" iyy="0.0001" izz="0.0001" ixy="0" ixz="0" iyz="0"/>
+        </inertial>
+        <visual name="${prefix}d435_visual">
+          <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+          <geometry>
+            <mesh filename="package://yam_arm_description/meshes/D435.obj"/>
+          </geometry>
+        </visual>
+        <collision name="${prefix}d435_collision">
+          <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+          <geometry>
+            <mesh filename="package://yam_arm_description/meshes/D435.obj"/>
+          </geometry>
+        </collision>
+      </link>
+      <joint type="fixed" name="${prefix}camera_support2d435_fixed">
+        <parent link="${prefix}camera_support"/>
+        <child link="${prefix}d435"/>
+        <origin xyz="-0.03014 0.00604 0.06023" rpy="2.6180 0.0 -1.5708"/>
+      </joint>
+    </xacro:if>
   </xacro:macro>
 </robot>

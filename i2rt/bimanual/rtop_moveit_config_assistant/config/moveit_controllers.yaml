@@ -1,0 +1,21 @@
+# MoveIt uses this configuration for controller management
+
+moveit_controller_manager: moveit_simple_controller_manager/MoveItSimpleControllerManager
+
+moveit_simple_controller_manager:
+  controller_names:
+    - left_gripper_controller
+    - right_gripper_controller
+
+  left_gripper_controller:
+    type: GripperCommand
+    joints:
+      - left_left_finger
+    action_ns: gripper_cmd
+    default: true
+  right_gripper_controller:
+    type: GripperCommand
+    joints:
+      []
+    action_ns: gripper_cmd
+    default: true

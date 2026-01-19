@@ -73,12 +73,14 @@
     prefix="left_"
     parent_link="base"
     xyz="0.0 0.305 1.0"
-    rpy="0.0 0.0 0.0"/>
+    rpy="0.0 0.0 0.0"
+    use_camera="true"/>
   
   <!-- Right arm: positioned at +0.305m (half of 0.610m spacing), 1m above base -->
   <xacro:yam_arm 
     prefix="right_"
     parent_link="base"
     xyz="0.0 -0.305 1.0"
-    rpy="0.0 0.0 0.0"/>
+    rpy="0.0 0.0 0.0"
+    use_camera="true"/>
 </robot>
