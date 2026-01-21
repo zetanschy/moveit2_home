@@ -14,3 +14,12 @@ endif()
 
 install(DIRECTORY config DESTINATION share/${PROJECT_NAME})
 install(FILES .setup_assistant DESTINATION share/${PROJECT_NAME})
+
+# Install Python scripts
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/scripts")
+  install(PROGRAMS
+    scripts/moveit_py_cartesian_demo.py
+    scripts/moveit_py_cartesian_demo
+    DESTINATION lib/${PROJECT_NAME}
+  )
+endif()

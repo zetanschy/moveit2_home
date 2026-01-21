@@ -1,0 +1,12 @@
+#!/usr/bin/env python3
+# Wrapper script to call moveit_py_cartesian_demo.py
+import sys
+import os
+
+# Get the directory where this script is located
+script_dir = os.path.dirname(os.path.abspath(__file__))
+demo_script = os.path.join(script_dir, 'moveit_py_cartesian_demo.py')
+
+# Execute the actual script
+exec(open(demo_script).read())
+
