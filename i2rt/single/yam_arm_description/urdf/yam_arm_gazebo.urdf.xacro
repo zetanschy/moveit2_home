@@ -6,7 +6,7 @@
   <xacro:arg name="ros2_controllers_path" default="yam_arm_moveit_config/config/ros2_controllers.yaml"/>
 
   <!-- Include the base robot description as xacro -->
-  <xacro:include filename="$(find yam_arm_description)/urdf/yam_arm_gazebo_macro.xacro"/>
+  <xacro:include filename="$(find yam_arm_description)/urdf/yam_arm_macro.xacro"/>
    
    <!-- World link -->
    <link name="world">
