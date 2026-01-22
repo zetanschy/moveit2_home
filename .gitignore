@@ -5,5 +5,4 @@ bcr_arm/
 *.png
 
 # Ignorar todos los archivos .md excepto README.md
-*.md
-!README.md
+i2rt/teaching/CURSO_CAPACITACION_ROS2_MANIPULADORES.md
