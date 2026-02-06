@@ -61,8 +61,8 @@
                 </state_interface>
                 <state_interface name="velocity"/>
             </joint>
+            <!-- left_right_finger: mimic joint (no command interface for Jazzy compatibility) -->
             <joint name="left_right_finger">
-                <command_interface name="position"/>
                 <state_interface name="position">
                   <param name="initial_value">${initial_positions['left_right_finger']}</param>
                 </state_interface>
@@ -118,8 +118,8 @@
                 </state_interface>
                 <state_interface name="velocity"/>
             </joint>
+            <!-- right_right_finger: mimic joint (no command interface for Jazzy compatibility) -->
             <joint name="right_right_finger">
-                <command_interface name="position"/>
                 <state_interface name="position">
                   <param name="initial_value">${initial_positions['right_right_finger']}</param>
                 </state_interface>

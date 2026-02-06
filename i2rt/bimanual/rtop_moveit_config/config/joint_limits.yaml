@@ -12,61 +12,83 @@ joint_limits:
   left_joint1:
     has_velocity_limits: true
     max_velocity: 10.0
-    has_acceleration_limits: false
-    max_acceleration: 0.0
+    has_acceleration_limits: true
+    max_acceleration: 5.0  # rad/s²
   left_joint2:
     has_velocity_limits: true
     max_velocity: 10.0
-    has_acceleration_limits: false
-    max_acceleration: 0.0
+    has_acceleration_limits: true
+    max_acceleration: 5.0  # rad/s²
   left_joint3:
     has_velocity_limits: true
     max_velocity: 10.0
-    has_acceleration_limits: false
-    max_acceleration: 0.0
+    has_acceleration_limits: true
+    max_acceleration: 5.0  # rad/s²
   left_joint4:
     has_velocity_limits: true
     max_velocity: 10.0
-    has_acceleration_limits: false
-    max_acceleration: 0.0
+    has_acceleration_limits: true
+    max_acceleration: 5.0  # rad/s²
   left_joint5:
     has_velocity_limits: true
-    max_velocity: 10.0    
-    has_acceleration_limits: false
-    max_acceleration: 0.0
+    max_velocity: 10.0
+    has_acceleration_limits: true
+    max_acceleration: 5.0  # rad/s²
   left_joint6:
     has_velocity_limits: true
     max_velocity: 10.0
-    has_acceleration_limits: false
-    max_acceleration: 0.0
+    has_acceleration_limits: true
+    max_acceleration: 5.0  # rad/s²
   # Right arm joints
   right_joint1:
     has_velocity_limits: true
     max_velocity: 10.0
-    has_acceleration_limits: false
-    max_acceleration: 0.0
+    has_acceleration_limits: true
+    max_acceleration: 5.0  # rad/s²
   right_joint2:
     has_velocity_limits: true
     max_velocity: 10.0
-    has_acceleration_limits: false
-    max_acceleration: 0.0
+    has_acceleration_limits: true
+    max_acceleration: 5.0  # rad/s²
   right_joint3:
     has_velocity_limits: true
     max_velocity: 10.0
-    has_acceleration_limits: false
-    max_acceleration: 0.0
+    has_acceleration_limits: true
+    max_acceleration: 5.0  # rad/s²
   right_joint4:
     has_velocity_limits: true
     max_velocity: 10.0
-    has_acceleration_limits: false
-    max_acceleration: 0.0
+    has_acceleration_limits: true
+    max_acceleration: 5.0  # rad/s²
   right_joint5:
     has_velocity_limits: true
-    max_velocity: 10.0    
-    has_acceleration_limits: false
-    max_acceleration: 0.0
+    max_velocity: 10.0
+    has_acceleration_limits: true
+    max_acceleration: 5.0  # rad/s²
   right_joint6:
     has_velocity_limits: true
     max_velocity: 10.0
-    has_acceleration_limits: false
-    max_acceleration: 0.0
+    has_acceleration_limits: true
+    max_acceleration: 5.0  # rad/s²
+  # Left gripper joints
+  left_left_finger:
+    has_velocity_limits: true
+    max_velocity: 1.0
+    has_acceleration_limits: true
+    max_acceleration: 5.0  # m/s² (prismatic joint)
+  left_right_finger:
+    has_velocity_limits: true
+    max_velocity: 1.0
+    has_acceleration_limits: true
+    max_acceleration: 5.0  # m/s² (prismatic joint)
+  # Right gripper joints
+  right_left_finger:
+    has_velocity_limits: true
+    max_velocity: 1.0
+    has_acceleration_limits: true
+    max_acceleration: 5.0  # m/s² (prismatic joint)
+  right_right_finger:
+    has_velocity_limits: true
+    max_velocity: 1.0
+    has_acceleration_limits: true
+    max_acceleration: 5.0  # m/s² (prismatic joint)
