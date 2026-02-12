@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
     <xacro:macro name="rtop_calib_ros2_control" params="name initial_positions_file">
-        <xacro:property name="initial_positions" value="${load_yaml(initial_positions_file)['initial_positions']}"/>
+        <xacro:property name="initial_positions" value="${xacro.load_yaml(initial_positions_file)['initial_positions']}"/>
 
         <ros2_control name="${name}" type="system">
             <hardware>
-                <!-- By default, set up controllers for simulation. This won't work on real hardware -->
-                <!-- plugin>mock_components/GenericSystem</plugin -->
+                <!-- For Isaac Sim: use topic_based_ros2_control to interface via topics -->
+                <!-- This plugin reads joint_states from /joint_states and writes commands to /joint_command -->
                 <plugin>topic_based_ros2_control/TopicBasedSystem</plugin>
-                <param name="joint_commands_topic">/joint_command</param>
+                <param name="joint_commands_topic">/joint_command_raw</param>
                 <param name="joint_states_topic">/joint_states</param>
             </hardware>
             <!-- Left Arm Joints -->
@@ -61,7 +61,7 @@
                 </state_interface>
                 <state_interface name="velocity"/>
             </joint>
-            <!-- left_right_finger: mimic joint (no command interface for Jazzy compatibility) -->
+            <!-- left_right_finger: mimic joint (no command interface - mimic joints cannot have command interfaces) -->
             <joint name="left_right_finger">
                 <state_interface name="position">
                   <param name="initial_value">${initial_positions['left_right_finger']}</param>
@@ -118,7 +118,7 @@
                 </state_interface>
                 <state_interface name="velocity"/>
             </joint>
-            <!-- right_right_finger: mimic joint (no command interface for Jazzy compatibility) -->
+            <!-- right_right_finger: mimic joint (no command interface - mimic joints cannot have command interfaces) -->
             <joint name="right_right_finger">
                 <state_interface name="position">
                   <param name="initial_value">${initial_positions['right_right_finger']}</param>
