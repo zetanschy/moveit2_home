@@ -2,7 +2,9 @@
 
 """
 MoveIt2 Python API script for RTOP bimanual robot.
-Commands cartesian poses for the gripper, closes gripper, then moves to another pose.
+Sequence:
+1. Move right arm to pose_goal_1, open right gripper, wait 2 sec, close right gripper
+2. Move left arm to pose_goal_2, open left gripper, wait 2 sec, close left gripper
 
 Usage:
     1. Start the simulation and MoveIt:
@@ -29,270 +31,174 @@ Note: The demo.launch.py should already include these parameters.
 
 import rclpy
 from rclpy.node import Node
-from moveit.core.robot_state import RobotState
 from moveit.planning import MoveItPy
 from moveit_configs_utils import MoveItConfigsBuilder
 from ament_index_python import get_package_share_directory
 import os
 from geometry_msgs.msg import PoseStamped
-from control_msgs.action import GripperCommand
-from rclpy.action import ActionClient
 import traceback
 import time
 import yaml
 import argparse
 
 
-def execute_sequence(rtop_moveit, arm_planner, gripper_planner, gripper_action_client, 
-                     arm_planning_group, gripper_planning_group, end_effector_link, 
+def move_gripper(rtop_moveit, gripper_planner, position, side, logger):
+    """
+    Move gripper to a target position using MoveIt planning.
+    position: 'open' or 'close'
+    side: 'left' or 'right'
+    Returns True on success, False on failure.
+    Uses SRDF named targets: 'left_open'/'left_close' or 'right_open'/'right_close'
+    """
+    gripper_planner.set_start_state_to_current_state()
+
+    # Use SRDF named states directly — avoids RobotState API issues
+    config_name = f"{side}_{position}"  # e.g., "right_open" or "left_close"
+    controller_name = f"{side}_gripper_controller"
+    logger.info(f"Setting {side} gripper goal to SRDF state: '{config_name}'")
+    gripper_planner.set_goal_state(configuration_name=config_name)
+
+    plan_result = gripper_planner.plan()
+    if plan_result:
+        gripper_trajectory = plan_result.trajectory
+        rtop_moveit.execute(gripper_trajectory, controllers=[controller_name])
+        logger.info(f"✓ {side.capitalize()} gripper {position}ed via MoveIt")
+        return True
+    else:
+        logger.error(f"Failed to {position} {side} gripper!")
+        return False
+
+
+def execute_sequence(rtop_moveit, right_arm_planner, right_gripper_planner,
+                     left_arm_planner, left_gripper_planner,
+                     right_end_effector_link, left_end_effector_link,
                      base_frame, logger, node):
     """
-    Execute the complete sequence: open gripper, move to pose 1, close gripper, 
-    move to pose 2, open gripper.
+    Execute the complete sequence:
+    1. Move right arm to pose_goal_1
+    2. Open right gripper, wait 2 sec, close right gripper
+    3. Move left arm to pose_goal_2
+    4. Open left gripper, wait 2 sec, close left gripper
     Returns True on success, False on failure.
     """
     try:
         # ==========================================
-        # Step 0: Open gripper (start with open gripper)
+        # Step 1: Move right arm to pose_goal_1
         # ==========================================
-        logger.info("\n=== Step 0: Opening gripper ===")
+        logger.info("\n=== Step 1: Moving right arm to pose_goal_1 ===")
         
-        # Use action interface to open gripper
-        gripper_goal_open = GripperCommand.Goal()
-        gripper_goal_open.command.position = 0.04  # Open position (0.04 = open, 0.0 = closed)
-        gripper_goal_open.command.max_effort = 50.0
-        
-        logger.info("Sending gripper open command...")
-        send_goal_future = gripper_action_client.send_goal_async(gripper_goal_open)
-        rclpy.spin_until_future_complete(node, send_goal_future)
-        goal_handle = send_goal_future.result()
-        
-        if goal_handle.accepted:
-            logger.info("Gripper goal accepted, waiting for result...")
-            result_future = goal_handle.get_result_async()
-            rclpy.spin_until_future_complete(node, result_future)
-            result = result_future.result().result
-            logger.info(f"✓ Gripper opened (position: {result.position})")
-        else:
-            logger.warn("Gripper action goal rejected, trying MoveIt planning...")
-            # Fallback: Use MoveItPy to set gripper to open state
-            gripper_planner.set_start_state_to_current_state()
-            
-            robot_model = rtop_moveit.get_robot_model()
-            gripper_state = RobotState(robot_model)
-            
-            # Set gripper joints to open position
-            # Based on SRDF: right_open has right_left_finger=0.037524, right_right_finger=-0.037524
-            gripper_state.set_joint_positions("right_left_finger", [0.037524])
-            gripper_state.set_joint_positions("right_right_finger", [-0.037524])
-            
-            gripper_planner.set_goal_state(robot_state=gripper_state)
-            
-            gripper_plan_result = gripper_planner.plan()
-            if gripper_plan_result:
-                gripper_trajectory = gripper_plan_result.trajectory
-                rtop_moveit.execute(gripper_planning_group, gripper_trajectory, blocking=True)
-                logger.info("✓ Gripper opened via MoveIt")
-            else:
-                logger.error("Failed to open gripper!")
-                return False
+        right_arm_planner.set_start_state_to_current_state()
 
-        time.sleep(1.0)
-
-        # ==========================================
-        # Step 1: Move to first cartesian pose
-        # ==========================================
-        logger.info("\n=== Step 1: Moving to first cartesian pose ===")
-        
-        # Set start state to current state
-        arm_planner.set_start_state_to_current_state()
-
-        # Try a pose that should be within the robot's workspace
-        # For a bimanual robot with arms at y=±0.305m and z=1.0m above base:
-        # - Left arm can reach positions with y > 0
-        # - Right arm can reach positions with y < 0
-        # - Both arms can reach forward (x > 0) and upward (z > 0)
+        # Pose for right arm (negative y for right side)
         pose_goal_1 = PoseStamped()
         pose_goal_1.header.frame_id = base_frame
-        pose_goal_1.pose.position.x = 0.4821   # Forward from base
-        pose_goal_1.pose.position.y = -0.344   # Slightly to the right (for right arm, negative y)
-        pose_goal_1.pose.position.z = 1.133   # Slightly above arm base (1.0 + 0.15)
-        
-        # Use a simple orientation that should be reachable
-        # Pointing forward and slightly down (common for pick and place
-        pose_goal_1.pose.orientation.x = 0.690
-        pose_goal_1.pose.orientation.y = 0.723
-        pose_goal_1.pose.orientation.z = -0.0067
-        pose_goal_1.pose.orientation.w = -0.0069  # 90 degrees around y-axis
+        pose_goal_1.pose.position.x = 0.0   # Forward from base
+        pose_goal_1.pose.position.y = -0.3   # Right side (negative y)
+        pose_goal_1.pose.position.z = 1.5   # Height above base
+        pose_goal_1.pose.orientation.x = 0.0
+        pose_goal_1.pose.orientation.y = 0.0
+        pose_goal_1.pose.orientation.z = 0.706
+        pose_goal_1.pose.orientation.w = 0.706
 
-        logger.info(f"Setting goal pose in frame '{base_frame}':")
+        logger.info(f"Setting right arm goal pose in frame '{base_frame}':")
         logger.info(f"  Position: x={pose_goal_1.pose.position.x}, y={pose_goal_1.pose.position.y}, z={pose_goal_1.pose.position.z}")
         logger.info(f"  Orientation: w={pose_goal_1.pose.orientation.w}, x={pose_goal_1.pose.orientation.x}, y={pose_goal_1.pose.orientation.y}, z={pose_goal_1.pose.orientation.z}")
-        logger.info(f"  Target link: {end_effector_link}")
+        logger.info(f"  Target link: {right_end_effector_link}")
 
-        arm_planner.set_goal_state(pose_stamped_msg=pose_goal_1, pose_link=end_effector_link)
+        right_arm_planner.set_goal_state(pose_stamped_msg=pose_goal_1, pose_link=right_end_effector_link)
         
         logger.info("Planning to goal pose...")
-        plan_result = arm_planner.plan()
+        plan_result = right_arm_planner.plan()
         if not plan_result:
-            logger.error("Failed to plan to first pose!")
+            logger.error("Failed to plan right arm to pose_goal_1!")
             logger.error("Possible reasons:")
             logger.error("  1. Goal pose is outside robot workspace")
             logger.error("  2. Goal pose is in collision")
             logger.error("  3. Goal orientation is not reachable")
             logger.error("  4. Current robot state is invalid")
-            logger.error("")
-            logger.error("Try adjusting the goal pose coordinates or orientation")
             return False
 
         robot_trajectory = plan_result.trajectory
         logger.info("✓ Plan found, executing...")
-        rtop_moveit.execute(arm_planning_group, robot_trajectory, blocking=True)
-        logger.info("✓ Reached first pose")
-
-        # Wait a bit
-        time.sleep(1.0)
-
-        # ==========================================
-        # Step 2: Close gripper
-        # ==========================================
-        logger.info("\n=== Step 2: Closing gripper ===")
-        
-        # Use action interface to close gripper (simpler and more reliable)
-        gripper_goal = GripperCommand.Goal()
-        gripper_goal.command.position = 0.0  # Closed position (0.0 = closed, 0.04 = open)
-        gripper_goal.command.max_effort = 50.0
-        
-        logger.info("Sending gripper close command...")
-        send_goal_future = gripper_action_client.send_goal_async(gripper_goal)
-        rclpy.spin_until_future_complete(node, send_goal_future)
-        goal_handle = send_goal_future.result()
-        
-        if goal_handle.accepted:
-            logger.info("Gripper goal accepted, waiting for result...")
-            result_future = goal_handle.get_result_async()
-            rclpy.spin_until_future_complete(node, result_future)
-            result = result_future.result().result
-            logger.info(f"✓ Gripper closed (position: {result.position})")
-        else:
-            logger.warn("Gripper action goal rejected, trying MoveIt planning...")
-            # Fallback: Use MoveItPy to set gripper to closed state
-            gripper_planner.set_start_state_to_current_state()
-            
-            robot_model = rtop_moveit.get_robot_model()
-            gripper_state = RobotState(robot_model)
-            
-            # Set gripper joints to closed position
-            # Based on SRDF: right_close has right_left_finger=0.037524, right_right_finger=-0.037524
-            gripper_state.set_joint_positions("right_left_finger", [0.037524])
-            gripper_state.set_joint_positions("right_right_finger", [-0.037524])
-            
-            gripper_planner.set_goal_state(robot_state=gripper_state)
-            
-            gripper_plan_result = gripper_planner.plan()
-            if gripper_plan_result:
-                gripper_trajectory = gripper_plan_result.trajectory
-                rtop_moveit.execute(gripper_planning_group, gripper_trajectory, blocking=True)
-                logger.info("✓ Gripper closed via MoveIt")
-            else:
-                logger.error("Failed to close gripper!")
-                return False
+        rtop_moveit.execute(robot_trajectory, controllers=["right_arm_controller"])
+        logger.info("✓ Right arm reached pose_goal_1")
 
         time.sleep(1.0)
 
         # ==========================================
-        # Step 3: Move to second cartesian pose
+        # Step 2: Open right gripper, wait 2 sec, close
         # ==========================================
-        logger.info("\n=== Step 3: Moving to second cartesian pose ===")
-        arm_planner.set_start_state_to_current_state()
+        logger.info("\n=== Step 2: Opening right gripper ===")
+        if not move_gripper(rtop_moveit, right_gripper_planner, "open", "right", logger):
+            return False
+        
+        logger.info("Waiting 2 seconds...")
+        time.sleep(2.0)
+        
+        logger.info("\n=== Step 2b: Closing right gripper ===")
+        if not move_gripper(rtop_moveit, right_gripper_planner, "close", "right", logger):
+            return False
 
-        # Second pose: different position but still reachable by right arm
-        # Keep y < 0 (right side) and reasonable height
+        time.sleep(1.0)
+
+        # ==========================================
+        # Step 3: Move left arm to pose_goal_2
+        # ==========================================
+        logger.info("\n=== Step 3: Moving left arm to pose_goal_2 ===")
+        left_arm_planner.set_start_state_to_current_state()
+
+        # Pose for left arm (positive y for left side)
         pose_goal_2 = PoseStamped()
         pose_goal_2.header.frame_id = base_frame
-        pose_goal_2.pose.position.x = 0.3450   # Further forward than first pose
-        pose_goal_2.pose.position.y = 0.0499  # More to the right (negative y for right arm)
-        pose_goal_2.pose.position.z = 1.22   # Similar height to first pose (reachable)
-        
-        # Use same orientation as first pose (we know it works)
-        pose_goal_2.pose.orientation.x = 0.6990
-        pose_goal_2.pose.orientation.y = 0.6990
-        pose_goal_2.pose.orientation.z = 0.1066
-        pose_goal_2.pose.orientation.w = 0.1066
+        pose_goal_2.pose.position.x = 0.63   # Forward from base
+        pose_goal_2.pose.position.y = 0.3    # Left side (positive y)
+        pose_goal_2.pose.position.z = 1.0    # Height above base
+        pose_goal_2.pose.orientation.x = 0.5
+        pose_goal_2.pose.orientation.y = 0.5
+        pose_goal_2.pose.orientation.z = 0.5
+        pose_goal_2.pose.orientation.w = 0.5
 
-        logger.info(f"Setting goal pose in frame '{base_frame}':")
+        logger.info(f"Setting left arm goal pose in frame '{base_frame}':")
         logger.info(f"  Position: x={pose_goal_2.pose.position.x}, y={pose_goal_2.pose.position.y}, z={pose_goal_2.pose.position.z}")
         logger.info(f"  Orientation: w={pose_goal_2.pose.orientation.w}, x={pose_goal_2.pose.orientation.x}, y={pose_goal_2.pose.orientation.y}, z={pose_goal_2.pose.orientation.z}")
-        logger.info(f"  Target link: {end_effector_link}")
+        logger.info(f"  Target link: {left_end_effector_link}")
 
-        arm_planner.set_goal_state(pose_stamped_msg=pose_goal_2, pose_link=end_effector_link)
+        left_arm_planner.set_goal_state(pose_stamped_msg=pose_goal_2, pose_link=left_end_effector_link)
 
         logger.info("Planning to goal pose...")
-        plan_result = arm_planner.plan()
+        plan_result = left_arm_planner.plan()
         if not plan_result:
-            logger.error("Failed to plan to second pose!")
+            logger.error("Failed to plan left arm to pose_goal_2!")
             logger.error("Possible reasons:")
             logger.error("  1. Goal pose is outside robot workspace")
             logger.error("  2. Goal pose is in collision")
             logger.error("  3. Goal orientation is not reachable")
             logger.error("  4. Current robot state is invalid")
-            logger.error("")
-            logger.error("Try adjusting the goal pose coordinates or orientation")
             return False
 
         robot_trajectory = plan_result.trajectory
         logger.info("✓ Plan found, executing...")
-        rtop_moveit.execute(arm_planning_group, robot_trajectory, blocking=True)
-        logger.info("✓ Reached second pose")
+        rtop_moveit.execute(robot_trajectory, controllers=["left_arm_controller"])
+        logger.info("✓ Left arm reached pose_goal_2")
 
         time.sleep(1.0)
 
         # ==========================================
-        # Step 4: Open gripper
+        # Step 4: Open left gripper, wait 2 sec, close
         # ==========================================
-        logger.info("\n=== Step 4: Opening gripper ===")
+        logger.info("\n=== Step 4: Opening left gripper ===")
+        if not move_gripper(rtop_moveit, left_gripper_planner, "open", "left", logger):
+            return False
         
-        # Use action interface to open gripper
-        gripper_goal_open = GripperCommand.Goal()
-        gripper_goal_open.command.position = 0.04  # Open position (0.04 = open, 0.0 = closed)
-        gripper_goal_open.command.max_effort = 50.0
+        logger.info("Waiting 2 seconds...")
+        time.sleep(2.0)
         
-        logger.info("Sending gripper open command...")
-        send_goal_future = gripper_action_client.send_goal_async(gripper_goal_open)
-        rclpy.spin_until_future_complete(node, send_goal_future)
-        goal_handle = send_goal_future.result()
-        
-        if goal_handle.accepted:
-            logger.info("Gripper goal accepted, waiting for result...")
-            result_future = goal_handle.get_result_async()
-            rclpy.spin_until_future_complete(node, result_future)
-            result = result_future.result().result
-            logger.info(f"✓ Gripper opened (position: {result.position})")
-        else:
-            logger.warn("Gripper action goal rejected, trying MoveIt planning...")
-            # Fallback: Use MoveItPy to set gripper to open state
-            gripper_planner.set_start_state_to_current_state()
-            
-            robot_model = rtop_moveit.get_robot_model()
-            gripper_state = RobotState(robot_model)
-            
-            # Set gripper joints to open position
-            # Based on SRDF: right_open has right_left_finger=0.037524, right_right_finger=-0.037524
-            gripper_state.set_joint_positions("right_left_finger", [0.037524])
-            gripper_state.set_joint_positions("right_right_finger", [-0.037524])
-            
-            gripper_planner.set_goal_state(robot_state=gripper_state)
-            
-            gripper_plan_result = gripper_planner.plan()
-            if gripper_plan_result:
-                gripper_trajectory = gripper_plan_result.trajectory
-                rtop_moveit.execute(gripper_planning_group, gripper_trajectory, blocking=True)
-                logger.info("✓ Gripper opened via MoveIt")
-            else:
-                logger.error("Failed to open gripper!")
-                return False
+        logger.info("\n=== Step 4b: Closing left gripper ===")
+        if not move_gripper(rtop_moveit, left_gripper_planner, "close", "left", logger):
+            return False
 
         time.sleep(1.0)
+
         return True
         
     except Exception as e:
@@ -323,13 +229,15 @@ def main():
         logger.info(f"use_sim_time: {use_sim_time}")
 
         # Configuration
-        arm_planning_group = "right_arm"  # or "right_arm"
-        gripper_planning_group = "right_gripper"  # or "right_gripper"
-        end_effector_link = "right_link_6"  # or "right_link_6"
-        gripper_action_topic = "/right_gripper_controller/gripper_cmd"  # or "/right_gripper_controller/gripper_cmd"
+        right_arm_planning_group = "right_arm"
+        right_gripper_planning_group = "right_gripper"
+        left_arm_planning_group = "left_arm"
+        left_gripper_planning_group = "left_gripper"
+        right_end_effector_link = "right_link_6"
+        left_end_effector_link = "left_link_6"
         base_frame = "base"  # Base frame for poses
 
-        logger.info(f"Initializing MoveItPy for planning group: {arm_planning_group}")
+        logger.info(f"Initializing MoveItPy for bimanual planning groups")
 
         # Build MoveIt configuration
         moveit_config_builder = MoveItConfigsBuilder(
@@ -437,17 +345,11 @@ def main():
             logger.error(f"Failed to initialize MoveItPy: {e}")
             logger.error("Make sure 'ros2 launch rtop_moveit_config demo.launch.py' is running!")
             raise
-        arm_planner = rtop_moveit.get_planning_component(arm_planning_group)
-        gripper_planner = rtop_moveit.get_planning_component(gripper_planning_group)
-        logger.info("✓ MoveItPy initialized")
-
-        # Initialize gripper action client
-        gripper_action_client = ActionClient(node, GripperCommand, gripper_action_topic)
-        logger.info(f"Waiting for gripper action server: {gripper_action_topic}")
-        if not gripper_action_client.wait_for_server(timeout_sec=10.0):
-            logger.error(f"Gripper action server not available!")
-            return 1
-        logger.info("✓ Gripper action server available")
+        right_arm_planner = rtop_moveit.get_planning_component(right_arm_planning_group)
+        right_gripper_planner = rtop_moveit.get_planning_component(right_gripper_planning_group)
+        left_arm_planner = rtop_moveit.get_planning_component(left_arm_planning_group)
+        left_gripper_planner = rtop_moveit.get_planning_component(left_gripper_planning_group)
+        logger.info("✓ MoveItPy initialized for both arms")
 
         # Main loop: execute sequence repeatedly
         sequence_count = 0
@@ -475,8 +377,9 @@ def main():
 
             # Execute the sequence
             success = execute_sequence(
-                rtop_moveit, arm_planner, gripper_planner, gripper_action_client,
-                arm_planning_group, gripper_planning_group, end_effector_link,
+                rtop_moveit, right_arm_planner, right_gripper_planner,
+                left_arm_planner, left_gripper_planner,
+                right_end_effector_link, left_end_effector_link,
                 base_frame, logger, node
             )
             
@@ -526,4 +429,3 @@ def main():
 if __name__ == "__main__":
     import sys
     sys.exit(main())
-
